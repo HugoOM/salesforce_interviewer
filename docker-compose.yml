@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  web_server:
+   build: ./web-server
+   ports:
+      - "80"
+   networks: 
+      - external
+   environment:
+    - SRC_FOLDER=/src
+    - EXERCISES_FOLDER=/exercises
+   volumes: 
+     - /home/hugo/code/docker/sf_interviewer/web-server/src:/src #Testing/Dev Only
+     - exercises-contents:/exercises
+     - /home/hugo/code/docker/sf_interviewer/web-server/jwt/server.key:/jwt/server.key
+   command: /bin/sh -c 'node $$SRC_FOLDER'
+   env_file: ./web-server/.env
+   depends_on:
+      - setup
+
+  auth_server:
+    image: node:17.1.0-alpine3.14
+    ports: 
+      - "80"
+    networks:
+      - internal
+    volumes: 
+      - ./auth_server/src:/src
+    command: /bin/sh -c 'node /src/app.js'
+    depends_on:
+      - setup
+
+  vscode: 
+    build: ./code-server/jailed
+    ports: 
+      - "80"
+    networks:
+      - isolate
+    volumes:
+      - exercises-contents:/jail/home/tester/exercises
+    user: tester
+    depends_on: 
+      - setup
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - internal
+      - external
+      - isolate
+    volumes:
+      - /home/hugo/code/docker/sf_interviewer/nginx/nginx.conf:/usr/local/nginx/conf/nginx.conf
+      - /home/hugo/code/docker/sf_interviewer/nginx/tls:/certs
+    depends_on:
+      - web
+      - auth_server
+      - vscode
+    restart: always
+
+  # auth_db:
+  #   image: redis:6.2.6-alpine
+
+  setup:
+    build: ./setup
+    volumes: 
+      - exercises-contents:/exercises
+    command:  >
+      sh -c "cp -r /exercises_source/. /exercises && 
+      chmod 777 -R /exercises &&
+      echo 'Setup completed' && 
+      exit 0"
+    
+networks:
+  internal:
+    internal: true
+  isolate:
+    internal: true
+  external:
+ 
+volumes:
+  exercises-contents:

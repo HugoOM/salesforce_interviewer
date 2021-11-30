@@ -1,0 +1,9 @@
+*.tar.gz
+node_modules
+*.key
+*.pem
+*.srl
+*.scr
+*.crt
+*.csr
+*.txt
