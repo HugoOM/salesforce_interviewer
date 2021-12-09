@@ -11,13 +11,14 @@ services:
     - SRC_FOLDER=/src
     - EXERCISES_FOLDER=/exercises
    volumes: 
-     - /home/hugo/code/docker/sf_interviewer/web-server/src:/src #Testing/Dev Only
+     - /home/hugo/code/docker/sf_interviewer/web-server:/src #Testing/Dev Only
      - exercises-contents:/exercises
      - /home/hugo/code/docker/sf_interviewer/web-server/jwt/server.key:/jwt/server.key
-   command: /bin/sh -c 'node $$SRC_FOLDER'
+   command: /bin/sh -c 'cd $$SRC_FOLDER/src && npm run build'
    env_file: ./web-server/.env
    depends_on:
       - setup
+   user: "1000" #Testing/Dev Only
 
   auth_server:
     image: node:17.1.0-alpine3.14
@@ -27,9 +28,14 @@ services:
       - internal
     volumes: 
       - ./auth_server/src:/src
+      - ./auth_server/access.json:/access/access.json
     command: /bin/sh -c 'node /src/app.js'
     depends_on:
       - setup
+    env_file: ./auth_server/.env
+
+  # auth_db:
+  #   image: redis:6.2.6-alpine
 
   vscode: 
     build: ./code-server/jailed
@@ -56,13 +62,10 @@ services:
       - /home/hugo/code/docker/sf_interviewer/nginx/nginx.conf:/usr/local/nginx/conf/nginx.conf
       - /home/hugo/code/docker/sf_interviewer/nginx/tls:/certs
     depends_on:
-      - web
+      - web_server
       - auth_server
       - vscode
     restart: always
-
-  # auth_db:
-  #   image: redis:6.2.6-alpine
 
   setup:
     build: ./setup

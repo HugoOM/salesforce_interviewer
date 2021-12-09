@@ -1,9 +1,13 @@
-const { AuthInfo, Connection } = require("@salesforce/core");
-const { TestService } = require("@salesforce/apex-node");
-const { ComponentSet } = require("@salesforce/source-deploy-retrieve");
-const { authenticate } = require("./authenticator");
+import { AuthInfo, Connection } from "@salesforce/core";
+import { TestService } from "@salesforce/apex-node";
+import {
+  ComponentSet,
+  DeployResult,
+  MetadataApiDeploy,
+} from "@salesforce/source-deploy-retrieve";
+import { authenticate } from "./authenticator.js";
 
-let connection;
+let connection: Connection;
 
 async function init() {
   const { accessToken, instanceUrl } = await authenticate();
@@ -24,23 +28,25 @@ async function init() {
   return { deploy, test };
 }
 
-async function deploy(folderId) {
+async function deploy(folderId: string) {
   const set = ComponentSet.fromSource([
     `${process.env.EXERCISES_FOLDER}/${folderId}`,
   ]);
 
-  const deployment = await set.deploy({ usernameOrConnection: connection });
+  const deployment: MetadataApiDeploy = await set.deploy({
+    usernameOrConnection: connection,
+  });
 
-  deployment.onUpdate(({ status }) => {
+  deployment.onUpdate(({ status }: { status: string }) => {
     console.log({ status });
   });
 
-  const deploymentResults = await deployment.pollStatus();
+  const deploymentResults: DeployResult = await deployment.pollStatus();
 
   return deploymentResults;
 }
 
-async function test(className) {
+async function test(className: string) {
   const testService = new TestService(connection);
 
   const testResults = await testService.runTestSynchronous(
@@ -58,6 +64,4 @@ async function test(className) {
   return testResults;
 }
 
-module.exports = {
-  init,
-};
+export { init };

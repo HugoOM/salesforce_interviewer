@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!-- <html lang="en" style="height: 100%; background: #203040"> -->
+<html lang="en" style="height: 100%; background: #203040">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salesforce Tester</title>
+    <link
+      rel="stylesheet"
+      href="/static/salesforce-lightning-design-system.min.css"
+    />
+  </head>
+  <body style="height: 100%">
+    <div
+      style="
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+      "
+    >
+      <iframe
+        style="height: 100%; width: 45%; border: none; margin: 0; padding: 0"
+        src="/editor/?folder=/jail/home/tester/exercises/1"
+      >
+      </iframe>
+
+      <div
+        style="width: 55%; display: flex; flex-direction: column; height: 100%"
+      >
+        <div style="padding: 12px; width: 100%">
+          <zero-md src="/static/example.md">
+            <template data-merge="append">
+              <style>
+                h1 {
+                  color: white;
+                  text-align: center;
+                }
+                p {
+                  color: white;
+                }
+              </style>
+            </template>
+          </zero-md>
+        </div>
+        <div
+          style="flex-grow: 1; display: flex; flex-direction: column-reverse"
+        >
+          <button
+            class="slds-button slds-button_brand"
+            id="compile-and-test"
+            style="
+              width: 100%;
+              height: 48px;
+              margin-top: 12px;
+              font-size: 14pt;
+              font-weight: 600;
+              border-radius: 0;
+            "
+          >
+            Compile &amp; Test
+          </button>
+          <div id="results-wrapper" style="color: white"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    document
+      .getElementById("compile-and-test")
+      .addEventListener("click", (event) => {
+        const resultsWrapperRef = document.getElementById("results-wrapper");
+
+        Array.from(resultsWrapperRef.childNodes).forEach((node) =>
+          node.remove()
+        );
+
+        fetch("/compile/1")
+          .then((response) => {
+            if (response.redirected) {
+              return window.location.replace(response.url);
+            }
+
+            return response.json();
+          })
+          .then((data) => {
+            if (!data.compileResults.success) {
+              const compileResultsWrapperDiv = document.createElement("div");
+
+              compileResultsWrapperDiv.innerHTML =
+                data.compileResults.errors.map(
+                  (error) => `<p>${error.message}</p><br/>`
+                );
+
+              resultsWrapperRef.appendChild(compileResultsWrapperDiv);
+            } else {
+              const testResultsWrapperDiv = document.createElement("div");
+
+              testResultsWrapperDiv.innerHTML = data.testResults.tests.map(
+                (testResult) =>
+                  `<p>${testResult.name} - ${testResult.status} ${testResult.message}</p><br/>`
+              );
+
+              resultsWrapperRef.appendChild(testResultsWrapperDiv);
+            }
+          });
+      });
+  </script>
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"
+  ></script>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%; background: #8ad6ff">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="/static/salesforce-lightning-design-system.min.css"
+    />
+    <title>Login</title>
+  </head>
+  <body
+    style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    "
+  >
+    <div>
+      <div class="slds-modal__container" style="width: 100%; max-width: none">
+        <div class="slds-modal__content slds-p-around_medium">
+          <div
+            style="
+              display: flex;
+              flex-direction: row;
+              justify-content: space-around;
+              align-items: center;
+              min-width: 650px;
+              margin-bottom: 25px;
+              user-select: none;
+            "
+          >
+            <img src="/static/SF_Logo.png" width="240" />
+            <img src="/static/Plus_Icon.png" width="55" />
+            <img src="/static/IFC_Plain_Logo.png" width="240" />
+          </div>
+          <form
+            action="/auth/login"
+            style="display: flex; flex-direction: column"
+          >
+            <div class="slds-form-element" style="margin-bottom: 8px">
+              <label class="slds-form-element__label" for="input_accesscode">
+                Access Code
+              </label>
+              <div class="slds-form-element__control">
+                <input
+                  type="text"
+                  placeholder="aex239dfsjl"
+                  required=""
+                  class="slds-input"
+                  id="input_accesscode"
+                  name="accessCode"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <button type="submit" class="slds-button slds-button_brand">
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      const queryStringParams = decodeURIComponent(window.location.search)
+        .split(/\?|&/)
+        .filter((queryStringParam) => queryStringParam !== "")
+        .reduce((params, queryStringParam) => {
+          const [key, value] = queryStringParam.split("=");
+          params[key] = value;
+          return params;
+        }, {});
+
+      console.log("QSPs:", queryStringParams);
+
+      window.history.replaceState(null, "", window.location.pathname);
+
+      window.addEventListener("DOMContentLoaded", () => {
+        // TODO Change to toast notification or on-page message
+        if ("error" in queryStringParams) {
+          alert("Invalid Access Code");
+        }
+      });
+    </script>
+  </body>
+</html>

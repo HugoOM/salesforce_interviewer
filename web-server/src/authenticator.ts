@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
-const ax = require("axios").default;
-const fs = require("fs");
+import jwt from "jsonwebtoken";
+import ax from "axios";
+import fs from "fs";
+
 const axios = ax.create({
   baseURL: process.env.ORG_URL,
 });
@@ -36,4 +37,4 @@ async function authenticate() {
   return { accessToken, instanceUrl };
 }
 
-module.exports = { authenticate };
+export { authenticate };
