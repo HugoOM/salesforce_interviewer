@@ -1,0 +1,32 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p ./tsconfig.json && npm run copy-source && node --experimental-modules ../dist/app.js",
+    "copy-source": "cp -r ./node_modules ../dist/node_modules && cp ./package.json ../dist/package.json"
+  },
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@salesforce/apex-node": "^0.3.0",
+    "@salesforce/core": "^2.29.0",
+    "@salesforce/source-deploy-retrieve": "^5.6.4",
+    "axios": "^0.24.0",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.1",
+    "gray-matter": "^4.0.3",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.6",
+    "@types/node": "^16.11.11"
+  }
+}
