@@ -30,11 +30,14 @@ func init() {
 
 func readUsersList() {
 	contents, err := os.ReadFile(filePath)
+	if err != nil {
+		fmt.Println("Couldn't read access / users file")
+		os.Exit(1)
+	}
 
 	err = json.Unmarshal(contents, &users)
-
 	if err != nil {
-		fmt.Println("error:", err)
+		panic(err)
 	}
 }
 

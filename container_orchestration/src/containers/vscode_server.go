@@ -1,4 +1,4 @@
-package vscode_container
+package containers
 
 import (
 	"bufio"
@@ -62,8 +62,6 @@ func SpawnVscodeContainer(cli *client.Client, userId string) (containerId string
 	)
 
 	cli.ContainerStart(context.Background(), containerInfo.ID, types.ContainerStartOptions{})
-
-	fmt.Println(containerInfo)
 
 	containerId = containerInfo.ID
 

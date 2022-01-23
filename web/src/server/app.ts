@@ -1,10 +1,10 @@
 import type { CompileAndTestResults } from "./types/webserver";
 import express from "express";
 import cookieParser from "cookie-parser";
-const app = express();
-const port = 80;
 import * as salesforce from "./modules/salesforce.js";
 import { parseMarkdown } from "./modules/frontmatter.js";
+const app = express();
+const port = 80;
 
 const exercisesMetadata = parseMarkdown();
 
