@@ -1,0 +1,24 @@
+{
+  "notebook.breadcrumbs.showCodeCells": false,
+  "window.menuBarVisibility": "hidden",
+  "scm.countBadge": "off",
+  "workbench.activityBar.visible": false,
+  "workbench.statusBar.visible": false,
+  "workbench.startupEditor": "none",
+  "workbench.welcomePage.walkthroughs.openOnInstall": false,
+  "workbench.commandPalette.history": 0,
+  "salesforcedx-vscode-apex.java.home": "/home/jail/home/tester/jdk-11.0.12",
+  "workbench.colorTheme": "Default Dark+",
+  "search.quickOpen.includeHistory": false,
+  "task.quickOpen.history": 0,
+  "debug.console.historySuggestions": false,
+  "extensions.ignoreRecommendations": true,
+  "salesforcedx-vscode-core.telemetry.enabled": false,
+  "breadcrumbs.enabled": false,
+  "comments.openPanel": "neverOpen",
+  "files.exclude": {
+    ".*": true,
+    "*.json": true,
+    "*.xml": true
+  }
+}

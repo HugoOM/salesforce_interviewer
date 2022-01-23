@@ -37,7 +37,7 @@ async function deploy(
   exerciseMetadata: MarkdownFrontmatter
 ) {
   const set = ComponentSet.fromSource([
-    `/staging/${userAccessCode}/${fileId}.cls`,
+    `/testers/${userAccessCode}/${exerciseMetadata.data.exercise_directory}/${fileId}.cls`,
   ]);
 
   const deployment: MetadataApiDeploy = await set.deploy({

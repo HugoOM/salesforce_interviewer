@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web_server:
-   build: ./web-server
+   build: ./web
    expose:
      - "80"
    networks: 
@@ -11,14 +11,14 @@ services:
     - SRC_FOLDER=/src
     - EXERCISES_FOLDER=/exercises
    volumes: 
-     - /home/hugo/code/docker/sf_interviewer/web-server:/src #Testing/Dev Only
-     - exercises-contents:/exercises
-     - /home/hugo/code/docker/sf_interviewer/web-server/jwt/server.key:/jwt/server.key
-   command: /bin/sh -c 'cd $$SRC_FOLDER/src && npm run build'
-   env_file: ./web-server/.env
+     - ${PWD}/web/src/server:/src
+     - full-source:/source
+     - ${PWD}/web/jwt/server.key:/jwt/server.key
+   command: /bin/sh -c 'cd $$SRC_FOLDER && npm run build'
+   env_file: ./web/.env
    depends_on:
       - setup
-   user: "1000" #Testing/Dev Only
+   user: "1000"
 
   auth_server:
     image: node:17.1.0-alpine3.14
@@ -28,23 +28,11 @@ services:
       - internal
     volumes: 
       - ./auth_server/src:/src
-      - ./auth_server/access.json:/access/access.json
+      - access-list:/access
     command: /bin/sh -c 'node /src/app.js'
     depends_on:
       - setup
     env_file: ./auth_server/.env
-
-  vscode: 
-    build: ./code-server/jailed
-    expose: 
-      - "80"
-    networks:
-      - isolate
-    volumes:
-      - exercises-contents:/jail/home/tester/exercises
-    user: tester
-    depends_on: 
-      - setup
 
   nginx:
     build: ./nginx
@@ -60,18 +48,13 @@ services:
     depends_on:
       - web_server
       - auth_server
-      - vscode
     restart: always
 
   setup:
     build: ./setup
     volumes: 
-      - exercises-contents:/exercises
-    command:  >
-      sh -c "cp -r /exercises_source/. /exercises && 
-      chmod 777 -R /exercises &&
-      echo 'Setup completed' && 
-      exit 0"
+      - ${PWD}/setup/source/exercises:/source
+      - exercises-source:/mnt/dest
     
 networks:
   internal:
@@ -81,4 +64,16 @@ networks:
   external:
  
 volumes:
-  exercises-contents:
+  exercises-source:
+  full-source:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/setup/source
+  access-list:
+   driver: local
+   driver_opts:
+    type: none
+    o: bind
+    device: ${PWD}/auth_server/access

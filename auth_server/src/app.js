@@ -7,7 +7,7 @@ const port = 80;
 app.use(cookieParser());
 
 app.get("/auth/validate", (req, res) => {
-  const { "access-code": accessCode } = req.cookies;
+  const { access_code: accessCode } = req.cookies;
 
   res.sendStatus(accessCode && validate(accessCode) ? 200 : 401);
 });
@@ -25,7 +25,7 @@ app.get("/auth/login/", (req, res) => {
     return res.redirect("/login?error=invalid");
   }
 
-  res.cookie("access-code", accessCode, {
+  res.cookie("access_code", accessCode, {
     domain: "test.com",
     sameSite: true,
     secure: true,

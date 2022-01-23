@@ -1,3 +1,7 @@
-FROM alpine:latest
+FROM alpine:3.15.0
 
-COPY tests /exercises_source
+COPY ./exec.sh /exec.sh
+
+RUN chmod +x /exec.sh
+
+ENTRYPOINT /bin/sh -c '/exec.sh'

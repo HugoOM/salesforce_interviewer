@@ -9,16 +9,16 @@ function validate(accessCode) {
     return false;
   }
 
-  const epochNowInSeconds = Date.now() / 1000;
-
-  if (
-    epochNowInSeconds < accessEntry.activeFromEpoch ||
-    epochNowInSeconds > accessEntry.expiresAtEpoch
-  ) {
+  if (accessEntry.submittedAtEpoch) {
     return false;
   }
 
-  if (accessEntry.submittedAtEpoch !== null) {
+  const epochNowInSeconds = Date.now() / 1000;
+
+  if (
+    epochNowInSeconds < accessEntry.validFromEpoch ||
+    epochNowInSeconds > accessEntry.expiresAtEpoch
+  ) {
     return false;
   }
 

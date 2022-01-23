@@ -1,10 +1,9 @@
-FROM alpine:latest
-
+FROM alpine:3.15.0
 RUN mkdir /source
 
 COPY ./source/pcre-8.45.tar.gz /source/pcre-8.45.tar.gz
 
-RUN apk add --update alpine-sdk perl linux-headers
+RUN apk add --update alpine-sdk perl linux-headers ca-certificates && update-ca-certificates
 
 #Install pcre
 RUN cd /source && \
@@ -32,7 +31,7 @@ RUN cd /source && \
 	# ./Configure darwin64-x86_64-cc --prefix=/usr && \
 	make && make install
 
-
+COPY ./source/echo-nginx-module-0.62 /source/echo-nginx-module-0.62/
 
 #Install nginx
 RUN cd /source && \ 
@@ -53,7 +52,8 @@ RUN cd /source && \
 	--with-http_stub_status_module \
 	--with-http_sub_module \
 	--with-stream \
-	--with-stream_ssl_module && \
+	--with-stream_ssl_module \
+	--add-module=/source/echo-nginx-module-0.62 && \
 	make && make install
 
 #Send logs to stdout
