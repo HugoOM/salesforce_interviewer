@@ -5,6 +5,7 @@ services:
    build: ./web
    expose:
      - "80"
+     - "3000"
    networks: 
       - external
    environment:
@@ -14,6 +15,7 @@ services:
      - ${PWD}/web/src/server:/src
      - full-source:/source
      - ${PWD}/web/jwt/server.key:/jwt/server.key
+     - ${PWD}/web/src/app:/app
    command: /bin/sh -c 'cd $$SRC_FOLDER && npm run build'
    env_file: ./web/.env
    depends_on:
