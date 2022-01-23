@@ -13,8 +13,8 @@ import (
 
 func main() {
 	name, ok := os.LookupEnv("NAME")
-	if !ok {
-		fmt.Print("CRITICAL - Missing User's Name (Environment Key: NAME)\n")
+	if !ok || name == "" {
+		fmt.Print("CRITICAL ERROR - Missing User's Name (Environment Key: NAME)\n")
 		os.Exit(1)
 	}
 
